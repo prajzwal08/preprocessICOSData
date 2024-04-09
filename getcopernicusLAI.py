@@ -5,7 +5,7 @@ import os
 c = cdsapi.Client()
 
 # Generate list of years from 2003 to 2020
-years = list(range(2014, 2016))
+years = list(range(2020, 2021))
 
 # Generate list of months from 1 to 12
 months = list(range(7, 13))

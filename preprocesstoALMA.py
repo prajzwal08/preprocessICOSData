@@ -133,7 +133,7 @@ if __name__ == "__main__":
             
         # for station with missing variables in 2020, i want to truncate it until 2019.
         if str(index) in str(station_with_missing_2020_list):
-            data_xarray = data_xarray.sel(time=slice(None, '2019-12-31 23:00:00'))
+            data_xarray = data_xarray.sel(time=slice(None, '2019-12-31 23:30:00'))
         
         ## Processing for getting LAI and CAMS co2
         #-----------------------------------------
@@ -233,7 +233,8 @@ if __name__ == "__main__":
             data_xarray.to_netcdf(output_path)
             print("Dataset saved successfully.")
         else:
-            print("There are missing values in one or more variables. Dataset not saved.")     
+            print("There are missing values in one or more variables. Dataset not saved.")
+                
         
 
 #Just to check the data.

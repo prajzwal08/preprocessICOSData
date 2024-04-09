@@ -60,7 +60,7 @@ for index, row in df.iterrows():
     config_template = f"""\
 WorkDir=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/ICOS_sites/{station_name}/
 SoilPropertyPath=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/input/SoilProperty/
-ForcingPath=/home/khanalp/task1/data/ICOS/Input_data/
+ForcingPath=/home/khanalp/data/processed/input_pystemmus/
 Location={station_name}
 directional=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/input/directional/
 fluspect_parameters=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/input/fluspect_parameters/
@@ -68,7 +68,7 @@ leafangles=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/input/leafangles/
 radiationdata=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/input/radiationdata/
 soil_spectrum=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/input/soil_spectrum/
 input_data=/home/khanalp/STEMMUSSCOPE/STEMMUS_SCOPE/input/input_data.xlsx
-InitialConditionPath=/home/khanalp/task1/data/ICOS/Initial_condition/
+InitialConditionPath=/home/khanalp/data/processed/initialcondition_pystemmus/
 StartTime={start_time}
 EndTime={end_time}
 InputPath=

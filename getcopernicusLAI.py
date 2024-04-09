@@ -5,10 +5,10 @@ import os
 c = cdsapi.Client()
 
 # Generate list of years from 2003 to 2020
-years = list(range(2003, 2021))
+years = list(range(2014, 2016))
 
 # Generate list of months from 1 to 12
-months = list(range(1, 13))
+months = list(range(7, 13))
 
 # Output path to save downloaded files
 output_path = "/home/khanalp/data/copernicus_lai"
@@ -23,7 +23,6 @@ def get_lai_days(year, month):
         else:
             return ["10", "20", "28"]
     return ["10", "20", "30"]
-
 
 
 # Loop through years and months to retrieve FAPAR LAI data

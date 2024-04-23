@@ -1,6 +1,6 @@
 import numpy as np
-
-
+import pandas as pd
+import os
 
 def list_folders_with_prefix(location, prefix):
 
@@ -54,4 +54,41 @@ def read_csv_file_with_station_name(station_name, file_paths):
                 return None
     print(f"No file with station name '{station_name}' found.")
     return None
-            
+    
+    
+def resampleLAI_to_fluxtower_resolution(data_frame,  resampling_interval='30min'):
+    """
+    Resamples LAI data to the flux tower resolution.
+
+    Parameters:
+        data_frame (pandas.DataFrame): DataFrame containing LAI data with a 'Date' column.
+        start_date (str): Start date for the resampling.
+        end_date (str): End date for the resampling.
+        resampling_interval (str, optional): Resampling interval. Defaults to '30 min'.
+
+    Returns:
+        pandas.DataFrame: Resampled and filtered LAI data.
+    """
+    
+    # Resample to specified interval and forward fill missing values
+    df_filled = data_frame.resample(resampling_interval).ffill()
+
+    # Get the year of the last date in the DataFrame
+    start_date_year = df_filled.index[0].year
+    last_date_year = df_filled.index[-1].year
+    
+    # Reindex to extend the index until the end of the last year and forward fill
+    start_date_extend = pd.to_datetime(f'{start_date_year}-01-01 00:00:00')
+    end_date_extend = pd.to_datetime(f'{last_date_year}-12-31 23:30:00')
+    
+    if df_filled.index.max() < end_date_extend:
+        df_filled = df_filled.reindex(pd.date_range(start=df_filled.index.min(), end=end_date_extend, freq=resampling_interval)).ffill()
+    
+    if df_filled.index.min() > start_date_extend:
+        # If not, reindex the DataFrame to include start_date_extend and forward fill missing values
+        df_filled = df_filled.reindex(pd.date_range(start=start_date_extend, end=df_filled.index.max(), freq=resampling_interval)).bfill()
+        
+    # Filter DataFrame based on start_date and end_date
+    #filtered_df = df_filled[(df_filled.index >= start_date) & (df_filled.index <= end_date)]
+
+    return df_filled

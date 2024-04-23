@@ -1,12 +1,12 @@
 import glob 
 import pandas as pd
 import numpy as np
-from laiprocessing.spatial_weighing import get_spatial_weighted_LAI
-from laiprocessing.interpolation import interpolate_NA_LAI
-from  laiprocessing.data_availability import check_data_availability_LAI
-from laiprocessing.smoothing import smoothing_LAI
+from spatial_weighing import get_spatial_weighted_LAI
+from interpolation import interpolate_NA_LAI
+from  data_availability import check_data_availability_LAI
+from smoothing import smoothing_LAI
+from utils import resampleLAI_to_fluxtower_resolution
 import matplotlib.pyplot as plt
-
 
 def extract_pixel_data(data_frame, no_tsteps, pixel_no):
     """
@@ -38,37 +38,8 @@ def extract_pixel_data(data_frame, no_tsteps, pixel_no):
 
 import pandas as pd
 
-def resampleLAI_to_fluxtower_resolution(data_frame, start_date, end_date, resampling_interval='30min'):
-    """
-    Resamples LAI data to the flux tower resolution.
 
-    Parameters:
-        data_frame (pandas.DataFrame): DataFrame containing LAI data with a 'Date' column.
-        start_date (str): Start date for the resampling.
-        end_date (str): End date for the resampling.
-        resampling_interval (str, optional): Resampling interval. Defaults to '30 min'.
-
-    Returns:
-        pandas.DataFrame: Resampled and filtered LAI data.
-    """
-    
-    # Resample to specified interval and forward fill missing values
-    df_filled = data_frame.resample(resampling_interval).ffill()
-
-    # Get the year of the last date in the DataFrame
-    last_date_year = df_filled.index[-1].year
-    
-    # Reindex to extend the index until the end of the last year and forward fill
-    end_date_extend = pd.to_datetime(f'{last_date_year}-12-31 23:30:00')
-    df_filled = df_filled.reindex(pd.date_range(start=df_filled.index.min(), end=end_date_extend, freq=resampling_interval)).ffill()
-    
-    # Filter DataFrame based on start_date and end_date
-    filtered_df = df_filled[(df_filled.index >= start_date) & (df_filled.index <= end_date)]
-
-    return filtered_df
-
-
-def get_LAI_for_station(modis_path,station_name,start_date,end_date, time_interval = "30min"):
+def get_modisLAI_for_station(station_name,time_interval = "30min"):
     """
     Retrieves Leaf Area Index (LAI) data from MODIS files for a specific station and time range. 
     The function performs data preprocessing steps including spatial weighting, interpolating missing values, 
@@ -83,7 +54,7 @@ def get_LAI_for_station(modis_path,station_name,start_date,end_date, time_interv
     Returns:
         numpy.ndarray: Array containing the smoothed LAI values.
     """
-    
+    modis_path = "/home/khanalp/data/MODIS_Raw/"
     lai_file = glob.glob(f"{modis_path}/{station_name}_MCD15A2H_Lai_500m_*")
     qc_file = glob.glob(f"{modis_path}/{station_name}_MCD15A2H_FparLai_QC*")
     sd_file = glob.glob(f"{modis_path}/{station_name}_MCD15A2H_LaiStdDev_500m_*")
@@ -91,7 +62,6 @@ def get_LAI_for_station(modis_path,station_name,start_date,end_date, time_interv
     df_lai = pd.read_csv(lai_file[0])
     df_sd = pd.read_csv(sd_file[0])
     df_qc = pd.read_csv(qc_file[0])
-
 
     # Get the number of timesteps
     no_tsteps = min(len(df_lai), len(df_sd), len(df_qc)) // max(df_lai['pixel'])
@@ -126,12 +96,8 @@ def get_LAI_for_station(modis_path,station_name,start_date,end_date, time_interv
 
     # Set 'Date' column as index
     df_lai_original.set_index('Date', inplace=True)
-    
 
-    lai_resampled_to_flux_resolution = resampleLAI_to_fluxtower_resolution(data_frame=df_lai_original,
-                                                                           start_date=start_date,
-                                                                           end_date=end_date,
+    df_lai_resampled = resampleLAI_to_fluxtower_resolution(data_frame=df_lai_original,
                                                                            resampling_interval = time_interval)
-    return lai_resampled_to_flux_resolution['LAI'].values
-
+    return df_lai_resampled
 

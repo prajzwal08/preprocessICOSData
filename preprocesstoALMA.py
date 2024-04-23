@@ -17,7 +17,7 @@ import os
 from utils import list_folders_with_prefix, list_csv_files_in_folder,read_csv_file_with_station_name
 from utils import select_rename_convert_to_xarray
 from utils import calculate_relative_and_specific_humidity
-from laiprocessing.preprocessLAI import get_LAI_for_station
+#from laiprocessing.preprocessLAI import get_LAI_for_station
 from getco2 import get_co2_data
 
 # Set the working directory

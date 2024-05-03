@@ -64,8 +64,22 @@ def select_rename_convert_to_xarray(data_frame, selected_variables, rename_mappi
     Returns:
         xarray.Dataset: Processed ICOS data as xarray dataset.
     """
-    # Select variables and rename them
-    df_selected = data_frame[selected_variables].rename(columns=rename_mapping)
+    # Initialize an empty DataFrame
+    df_selected = pd.DataFrame()
+    
+    # Iterate over selected variables
+    for var in selected_variables:
+        # Check if the variable exists in the DataFrame
+        if var in data_frame.columns:
+            # Rename and select the variable
+            df_selected[var] = data_frame[var]
+        else:
+            #print(f"Variable '{var}' not found in the DataFrame. Adding it with missing values (-9999).")
+            # Add the variable with missing values (-9999)
+            df_selected[var] = np.full_like(data_frame.index, -9999)
+    
+    # Rename columns
+    df_selected = df_selected.rename(columns=rename_mapping)
     
     # Make xarray dataset
     xds = xr.Dataset.from_dataframe(df_selected)

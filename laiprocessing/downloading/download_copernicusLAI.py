@@ -5,10 +5,10 @@ import os
 c = cdsapi.Client()
 
 # Generate list of years from 2003 to 2020
-years = list(range(2014, 2016))
+years = list(range(2003, 2016))
 
 # Generate list of months from 1 to 12
-months = list(range(5, 13))
+months = list(range(1, 13))
 
 # Output path to save downloaded files
 output_path = "/home/khanalp/data/copernicus_lai"
@@ -39,6 +39,10 @@ def get_lai_days(year, month):
 # Loop through years and months to retrieve FAPAR LAI data
 for year in years:
     for month in months:
+        # Determine satellite based on year, month, and nominal_day
+        # For v0, until 2014 May 13, its from SPOT and afterwards from PROBA. 
+        satellite = 'spot' if (year < 2014 or (year == 2014 and month <= 4) or (year == 2014 and month == 5 and (get_lai_days(year, month) in [5, 13]))) else 'proba'
+        
         # Construct request for data retrieval
         request = {
             'format': 'zip',

@@ -19,3 +19,7 @@ The project directory is organized as follows:
   - `utils.py`: Contains utility functions utilised in both preprocessing.
 
 - **main.py**: Main script that ties together the entire workflow.
+
+## Output
+1).csv file with date and LAI 
+2) plots making comparison

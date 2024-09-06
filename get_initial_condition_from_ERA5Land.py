@@ -15,6 +15,7 @@ ee.Initialize()
 station_details = '/home/khanalp/code/PhD/preprocessICOSdata/csvs/02_station_with_elevation_heightcanopy.csv'
 input_pystemmus_location = "/home/khanalp/data/processed/input_pystemmus"
 output_path = "/home/khanalp/code/PhD/preprocessICOSdata/csvs"
+output_filename = "03_ERA5Land_initial_condition.csv"
 
 # List all files in the directory
 files_in_directory = os.listdir(input_pystemmus_location)
@@ -33,6 +34,8 @@ for nc_file in nc_files:
 # Reading station details from a CSV file
 # Load station details from CSV
 df_station_details = pd.read_csv(station_details)
+df_output = pd.read_csv(os.path.join(output_path,output_filename),index_col=0)
+
 # Iterate through each station in the station dictionary
 for station_name, info in station.items():
     if station_name in df_station_details['station_name'].values:
@@ -49,33 +52,39 @@ dfs = []
 
 # Loop through each station in the station dictionary
 for station_name, station_info in station.items():
-    latitude = station_info['latitude']
-    longitude = station_info['longitude']
-    start_year = station_info['start_year']
-    end_year = station_info['end_year']
-    point = ee.Geometry.Point(longitude, latitude)
-    
-    # Filter image collection for the specified year
-    filtered_collection = ee.ImageCollection("ECMWF/ERA5_LAND/HOURLY").filterDate(str(start_year) + "-01-01", str(start_year) + "-12-31")
-    first_image = ee.Image(filtered_collection.first())
-    image_date = ee.Date(first_image.get('system:time_start')).format('YYYY-MM-dd').getInfo()
-    values_dict = first_image.reduceRegion(reducer=ee.Reducer.first(), geometry=point, scale=10000).getInfo()
-    
-    # Create a DataFrame from the dictionary of band values
-    station_df = pd.DataFrame(values_dict, index=[station_name])
-    station_df = station_df[band_required]
+    if station_name not in df_output.index:
+        print(station_name)
+        latitude = station_info['latitude']
+        longitude = station_info['longitude']
+        start_year = station_info['start_year']
+        end_year = station_info['end_year']
+        point = ee.Geometry.Point(longitude, latitude)
+        
+        # Filter image collection for the specified year
+        filtered_collection = ee.ImageCollection("ECMWF/ERA5_LAND/HOURLY").filterDate(str(start_year) + "-01-01", str(start_year) + "-12-31")
+        first_image = ee.Image(filtered_collection.first())
+        image_date = ee.Date(first_image.get('system:time_start')).format('YYYY-MM-dd').getInfo()
+        values_dict = first_image.reduceRegion(reducer=ee.Reducer.first(), geometry=point, scale=10000).getInfo()
+        
+        # Create a DataFrame from the dictionary of band values
+        station_df = pd.DataFrame(values_dict, index=[station_name])
+        station_df = station_df[band_required]
 
-    # Add latitude, longitude, and image date as columns
-    station_df['latitude'] = latitude
-    station_df['longitude'] = longitude
-    station_df['image_date'] = image_date
-    
-    # Append the station DataFrame to the list
-    dfs.append(station_df)
+        # Add latitude, longitude, and image date as columns
+        station_df['latitude'] = latitude
+        station_df['longitude'] = longitude
+        station_df['image_date'] = image_date
+        
+        # Append the station DataFrame to the list
+        dfs.append(station_df)
+
+df_concated = pd.concat(dfs)
 
 # Concatenate all DataFrames into a single DataFrame
-df = pd.concat(dfs)
+if not df_concated.empty:
+    df_output = pd.concat([df_output, df_concated])
+    print("Initial conditions for some stations updated")
+    df_output.to_csv(os.path.join(output_path,output_filename), index=True)
+else: 
+    print("Initial conditions for all stations are already available")
 
-# Writing DataFrame to a CSV file
-output_filename = "03_ERA5Land_initial_condition.csv"
-df.to_csv(os.path.join(output_path,output_filename), index=True)

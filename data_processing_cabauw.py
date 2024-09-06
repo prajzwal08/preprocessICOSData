@@ -255,6 +255,11 @@ if __name__ == "__main__":
     # Define the output file path
     combined_dataset_30mins_path = os.path.join(cabauw_file_location, "intermediate", "combined_dataset_30mins.nc")
 
+    #Grab station details for Cabauw
+    df_station_details = pd.read_csv(station_details)
+    station_name = "NL-Cab"
+    station_info = df_station_details[df_station_details['station_name'] == station_name]
+
     # Process and save datasets if not already saved
     if not os.path.exists(combined_dataset_30mins_path):
         meteorological_file_keyword = "cesar_surface_meteo"
@@ -263,9 +268,7 @@ if __name__ == "__main__":
         combined_dataset_radiation = get_combined_meteorological_dataset(cabauw_file_location, radiation_file_keyword)
 
         # Load station details from CSV
-        df_station_details = pd.read_csv(station_details)
-        station_name = "NL-Cab"
-        station_info = df_station_details[df_station_details['station_name'] == station_name]
+        
 
         # Print long_name attributes for radiation variables
         for var_name in combined_dataset_radiation.data_vars:
@@ -321,6 +324,7 @@ if __name__ == "__main__":
     data_xarray = add_lai_data_to_xarray(data_xarray, lai_modis_path, station_name)
     data_xarray = update_co2_data(data_xarray=data_xarray, cams_path=cams_path)
     data_xarray = update_vpd_data(data_xarray=data_xarray)
+    data_xarray['RH'] = data_xarray['RH'].clip(min=0, max=100) # Because some data are not within range
 
     # Convert units and ensure variables are in float32 format
     data_xarray = convert_units(data_xarray)

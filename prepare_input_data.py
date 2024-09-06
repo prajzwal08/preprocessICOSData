@@ -10,8 +10,8 @@ import xarray as xr
 import numpy as np
 import os
 from utils import read_csv_file_with_station_name
-from utils import calculate_relative_and_specific_humidity
-from getco2 import get_co2_data
+from utils import add_lai_data_to_xarray, add_station_info_to_xarray, update_co2_data, update_humidity_data
+
 
 def select_rename_convert_to_xarray(data_frame, selected_variables, rename_mapping):
     """
@@ -64,126 +64,6 @@ def select_rename_convert_to_xarray(data_frame, selected_variables, rename_mappi
     
     # Return the final xarray Dataset with selected, renamed variables and added dimensions
     return xds_dimension
-
-
-def add_station_info_to_xarray(data_xarray, station_info):
-    #getting other  variables in xarray.
-    data_xarray['latitude'] = xr.DataArray(np.array(station_info['latitude']).reshape(1,-1), dims=['x','y'])
-    data_xarray['longitude'] = xr.DataArray(np.array(station_info['longitude']).reshape(1,-1), dims=['x','y'])
-    data_xarray['reference_height'] = xr.DataArray(np.array(station_info['measurement_height']).reshape(1,-1), dims=['x','y'])
-    data_xarray['canopy_height'] = xr.DataArray(np.array(station_info['height_canopy_field_information']).reshape(1,-1), dims=['x','y'])
-    data_xarray['elevation'] = xr.DataArray(np.array(station_info['elevation']).reshape(1,-1), dims=['x','y'])
-    data_xarray['IGBP_veg_short'] = xr.DataArray(np.array(station_info['IGBP_short_name'], dtype = 'S200').reshape(1,-1),dims = ['x','y'])
-    data_xarray['IGBP_veg_long'] = xr.DataArray(np.array(station_info['IGBP_long_name'], dtype = 'S200').reshape(1,-1),dims = ['x','y'])
-    return data_xarray
-
-def add_lai_data_to_xarray(data_xarray, lai_modis_path, station_name):
-    """
-    Finds the LAI file, reads and filters LAI data, and adds it to the xarray dataset.
-
-    Parameters:
-    - data_xarray (xr.Dataset): The xarray dataset to which LAI data will be added.
-    - lai_modis_path (str): Directory path containing the LAI CSV files.
-    - station_name (str): The name of the station to match the LAI file.
-
-    Returns:
-    - xr.Dataset: Updated xarray dataset with added LAI data.
-    """
-    # Find the LAI file that matches the station_name
-    file_path = next((os.path.join(lai_modis_path, file) for file in os.listdir(lai_modis_path) if station_name in file), None)
-    
-    if file_path is None:
-        raise FileNotFoundError(f"No LAI file found for station: {station_name}")
-    
-    # Read LAI data
-    df_lai = pd.read_csv(file_path)
-    df_lai.columns = ['Date', 'LAI']
-    df_lai['Date'] = pd.to_datetime(df_lai['Date'])
-    
-    # Filter LAI data based on the time range in data_xarray
-    start_date = pd.to_datetime(data_xarray['time'].values.min())
-    end_date = pd.to_datetime(data_xarray['time'].values.max())
-    df_lai_filtered = df_lai[(df_lai['Date'] >= start_date) & (df_lai['Date'] <= end_date)]
-    
-    # Check if the lengths match
-    if len(df_lai_filtered) != len(data_xarray['time']):
-        raise ValueError("Length mismatch between LAI data and xarray time dimension")
-    
-    # Add LAI data to data_xarray
-    data_xarray['LAI'] = xr.DataArray(df_lai_filtered['LAI'].values.reshape(1, 1, -1), dims=['x', 'y', 'time'])
-    data_xarray['LAI_alternative'] = xr.DataArray(df_lai_filtered['LAI'].values.reshape(1, 1, -1), dims=['x', 'y', 'time'])
-    return data_xarray
-
-def update_co2_data(data_xarray, counts, cams_path):
-    """
-    Updates the 'CO2air' data in the xarray dataset using CAMS data if missing.
-
-    Parameters:
-    - data_xarray (xr.Dataset): The xarray dataset to update.
-    - counts (dict): Dictionary containing the counts of missing values for different variables.
-    - cams_path (str): File path to the CAMS data.
-
-    Returns:
-    - xr.Dataset: Updated xarray dataset with 'CO2air' data.
-    """
-    # Check if CO2air is missing
-    if counts['CO2air'] > 0:
-        # Get CO2 data from CAMS
-        co2_array = get_co2_data(
-            latitude=data_xarray['latitude'].values.flatten(),
-            longitude=data_xarray['longitude'].values.flatten(),
-            start_time=data_xarray.time.values.min(),
-            end_time=data_xarray.time.values.max(),
-            resampling_interval="30 min",
-            file_path=cams_path
-        )
-        # Update 'CO2air' in data_xarray with CAMS data
-        data_xarray['CO2air'] = xr.DataArray(co2_array.reshape(1, 1, -1), dims=['x', 'y', 'time'])
-        # Set attributes to indicate the source of the data
-        attributes_CO2air = {'method': 'from cams, due to insufficient field record'}
-        data_xarray['CO2air'].attrs.update(attributes_CO2air)
-    else:
-        # Set attributes if 'CO2air' data is from the field
-        attributes_CO2air = {'method': 'from field'}
-        data_xarray['CO2air'].attrs.update(attributes_CO2air)
-
-    return data_xarray
-
-def update_humidity_data(data_xarray, counts):
-    """
-    Updates the 'RH' (Relative Humidity) and 'Qair' (Specific Humidity) in the xarray dataset.
-    
-    Parameters:
-    - data_xarray (xr.Dataset): The xarray dataset to update.
-    - counts (dict): Dictionary containing the counts of missing values for different variables.
-    
-    Returns:
-    - xr.Dataset: Updated xarray dataset with 'RH' and 'Qair' data.
-    """
-    # Calculate relative and specific humidity
-    relative_humidity, specific_humidity = calculate_relative_and_specific_humidity(
-        data_xarray.VPD.values.flatten(), 
-        data_xarray.Tair.values.flatten(), 
-        data_xarray.Psurf.values.flatten()
-    )
-    
-    # Check if RH data is missing
-    if counts['RH'] > 0:
-        # If missing, replace with calculated values
-        data_xarray['Qair'] = xr.DataArray(specific_humidity.reshape(1, 1, -1), dims=['x', 'y', 'time'])
-        data_xarray['RH'] = xr.DataArray(relative_humidity.reshape(1, 1, -1), dims=['x', 'y', 'time'])
-        # Update attributes to indicate the source of the data
-        attributes_RH_Qair = {'method': 'calculated from VPD, Tair, Psurf, ignoring field data.'}
-        data_xarray['Qair'].attrs.update(attributes_RH_Qair)
-        data_xarray['RH'].attrs.update(attributes_RH_Qair)
-    else:
-        # If RH data is not missing, only update Qair with calculated values
-        data_xarray['Qair'] = xr.DataArray(specific_humidity.reshape(1, 1, -1), dims=['x', 'y', 'time'])
-        # Update attributes for Qair
-        attributes_RH_Qair = {'method': 'calculated from VPD, Tair, Psurf, ignoring field data.'}
-        data_xarray['Qair'].attrs.update(attributes_RH_Qair)
-    
-    return data_xarray
 
 
 def convert_units(data_xarray):

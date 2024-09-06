@@ -25,9 +25,7 @@ file_path_station_info = "/home/khanalp/code/PhD/preprocessICOSdata/output/csvs/
 input_data_path_flux = "/home/khanalp/data/ICOS2020"
 output_path = "/home/khanalp/data/processed/insituflux"
 
-# Change directory
 os.chdir("/home/khanalp/code/PhD/preprocessICOSdata")
-
 # List folders and CSV files
 prefix = "FLX"
 folders = list_folders_with_prefix(input_data_path_flux, prefix)
@@ -74,6 +72,7 @@ def extract_start_end_years(xds):
 
 # Process CSV files and save as NetCDF
 for csv_file in csv_files:
+    print(csv_file)
     df_insitu_flux = pd.read_csv(csv_file)
     
     # Convert DataFrame to xarray dataset
@@ -82,7 +81,7 @@ for csv_file in csv_files:
     # Assign attributes to variables
     for var_name, var_info in variable_info.items():
         insitu_data_nc[var_name].attrs['unit'] = var_info.get('unit', '')
-        insitu_data_nc[var_name].attrs['missing_value'] = var_info.get('missing_value', None)
+        insitu_data_nc[var_name].attrs['_FillValue'] = var_info.get('missing_value', 'None')
         insitu_data_nc[var_name].attrs['description'] = var_info.get('description', '')
 
     # Extract station name and start/end years
@@ -97,4 +96,4 @@ for csv_file in csv_files:
     insitu_data_nc.to_netcdf(outputfile_path)
     
     # Stop after processing one CSV file (for demonstration purposes)
-    #break
+    break

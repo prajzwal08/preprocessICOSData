@@ -1,0 +1,15 @@
+WorkDir=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/ICOS_sites/IT-Ren/
+SoilPropertyPath=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/SoilProperty/
+ForcingPath=/home/khanalp/data/processed/input_pystemmus/
+Location=IT-Ren
+directional=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/directional/
+fluspect_parameters=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/fluspect_parameters/
+leafangles=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/leafangles/
+radiationdata=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/radiationdata/
+soil_spectrum=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/soil_spectrum/
+input_data=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/input_data.xlsx
+InitialConditionPath=/home/khanalp/data/processed/initialcondition_pystemmus/
+StartTime=2003-01-01T00:00
+EndTime=2020-12-31T23:30
+InputPath=
+OutputPath=

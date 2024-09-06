@@ -1,0 +1,72 @@
+﻿station_name,latitude,longitude,elevation,height_canopy_ETH,sd_height_canopy,height_canopy_field_information,measurement_height,IGBP_long_name,IGBP_short_name,Remarks for height_canopy and measurement_height
+BE-Lon,50.55162,4.746234,168.5903015,0,0,1,2.7,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CH-Oe2,47.286417,7.73375,451.90802,0,0,1,2,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CZ-KrP,49.573257,15.078773,543.7374878,0,0,1,10,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Geb,51.09973,10.91463,161.3664856,0,0,1,2,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Kli,50.89306,13.52238,480.1984558,0,1,1,2,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-RuS,50.865906,6.4471445,102.5233917,0,0,1,2,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FI-Qvd,60.295242,22.391607,5.679937363,4,2,0.5,2.3,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-Aur,43.54965,1.106103,244.3140106,0,0,1,3.5,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-Gri,48.84422,1.95191,121.9627533,0,0,1,3,Croplands,CRO,modelevaluation(https://modelevaluation.org/dataSet/display/mhoNTbZyxPr69YS2S)
+FR-Lam,43.496437,1.237878,178.9725494,0,0,1.5,3.5,Croplands,CRO,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IT-BCi,40.52375,14.957444,10.13536167,0,1,1,2,Croplands,CRO,modelevaluation(https://modelevaluation.org/dataSet/display/Zc3pA9Nja7SnbQhpD)
+BE-Maa,50.97987,5.631851,85.89543152,12,9,0.7,3,Closed Shrublands,CSH,height_canopy and measurement_height from https://meta.icos-cp.eu/objects/hYoHpccaPJv8R7cUeAnBnBV0
+CZ-Lnz,48.68155,16.946331,181.3612366,28,8,36,48,Deciduous Broadleaf Forests,DBF,https://presentations.copernicus.org/EGU2020/EGU2020-7820_presentation.pdf
+CZ-Stn,49.03597,17.9699,476.0252075,27,10,13,22,Deciduous Broadleaf Forests,DBF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Hai,51.079407,10.452089,468.2496643,28,6,13,22,Deciduous Broadleaf Forests,DBF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-HoH,52.08656,11.22235,215.8092957,32,8,13,22,Deciduous Broadleaf Forests,DBF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Hzd,50.96381,13.48978,383.2720642,15,8,,,Deciduous Broadleaf Forests,DBF,NA
+DK-Sor,55.48587,11.644645,40,25,9,10,30,Deciduous Broadleaf Forests,DBF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-Fon,48.476357,2.780096,113.3226395,26,6,23,35,Deciduous Broadleaf Forests,DBF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-Hes,48.6741,7.06465,320.8886108,21,7,13,22,Deciduous Broadleaf Forests,DBF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+GF-Guy,5.2787,-52.9248,53.02915955,37,8,35,55,Evergreen Broadleaf Forests,EBF,model evaluation (https://modelevaluation.org/dataSet/display/gXpQsLePFKJnmBjgz)
+CH-Dav,46.81533,9.85591,1657.424072,33,9,25,35,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CZ-BK1,49.502075,18.536882,882.0344849,25,8,17,25.5,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CZ-RAJ,49.4437236,16.6965125,652.3496094,31,8,17,25.5,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Obe,50.78666,13.72129,744.2780151,27,8,17,25.5,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-RuW,50.50493,6.3309627,627.1288452,35,7,17,25.5,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Tha,50.96256,13.56515,408.681366,32,8,31,42,Evergreen Needleleaf Forests,ENF,https://doi.org/10.1016/j.jhydrol.2022.128873
+FI-Hyy,61.84741,24.29477,187.526413,18,8,14,23.3,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FI-Ken,67.98721,24.24301,350.9222717,17,9,13,23,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FI-Let,60.64183,23.95952,123.8983002,28,8,20,25.5,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FI-Var,67.7549,29.61,395.9870605,5,5,8,15,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-Bil,44.493652,-0.956092,38.83230209,13,6,14,23.3,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IL-Yat,31.34504,35.05198,658.4355469,17,5,10,20,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IT-Lav,45.9562,11.28132,1367.592163,2,6,28,42,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IT-Ren,46.58686,11.43369,1749.939941,32,7,25,35,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IT-SR2,43.73202,10.29091,13.85927677,29,7,14,23.3,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+NL-Loo,52.166447,5.74355,33,29,7,15.5,27,Evergreen Needleleaf Forests,ENF,model evaluation (https://modelevaluation.org/dataSet/display/SCHuzbvBAKXXZNGtQ)
+NL-Spe,52.255,5.690278,65.15446472,25,8,32,47.4,Evergreen Needleleaf Forests,ENF,
+RU-Fy2,56.447603,32.901878,277.8615112,27,7,27.4,29,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+RU-Fyo,56.4615,32.9221,278.1734619,34,8,27.4,29,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+SE-Htm,56.09763,13.41897,120.5034714,32,7,19,27,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+SE-Nor,60.0865,17.479504,46,27,8,25,36,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+SE-Ros,64.1725,19.738,168.961441,31,10,14,23.3,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+SE-Svb,64.25611,19.7745,277.8584595,12,9,20,32.5,Evergreen Needleleaf Forests,ENF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+BE-Dor,50.311874,4.968113,246.6483459,10,9,0.1,1.5,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CH-Aws,46.583194,9.790417,1976.19458,4,4,0.5,2,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CH-Cha,47.210222,8.410444,391.412323,15,10,1,2,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CH-Fru,47.115833,8.537778,981.6561279,5,5,1,2,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Gri,50.95004,13.51259,377.0952759,6,6,0.21,3,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-RuR,50.621914,6.304126,513.3651733,5,4,1,2,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-Tou,43.572857,1.37474,157.2071838,4,3,0.25,3.7,Grasslands,GRA,By request from meteo.fr
+IT-MBo,46.01468,11.045831,1556.345093,0,0,0.3,4,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IT-Tor,45.84444,7.578055,2161.397705,9,7,1,2,Grasslands,GRA,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+NL-Cab,51.971,4.927,-0.7,0,1,0.1,3,Grasslands,GRA,https://cdn.knmi.nl/knmi/pdf/bibliotheek/knmipubTR/TR384.pdf
+NL-Vee,51.981,5.62,5.7,14,8,0.1,2,Grasslands,GRA,https://doi.org/10.1007/s10546-024-00871-z 
+BE-Bra,51.30761,4.51984,32.03133392,5,6,21,39,Mixed Forests,MF,model evaluation  (https://modelevaluation.org/dataSet/display/jkFQ3bTQwACtxPuaw)
+BE-Vie,50.304962,5.998099,493.235199,23,7,33,52,Mixed Forests,MF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-FBn,43.24079,5.67865,434.526062,35,7,10,15,Mixed Forests,MF,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IT-Cp2,41.704266,12.357293,18.41332436,18,5,,20,Mixed Forests,MF,NA
+ES-Agu,36.940046,-2.033208,201.7076569,0,0,,2.9,Open Shrublands,OSH,NA
+ES-LJu,36.926594,-2.752115,1613.89502,0,0,1,2.5,Open Shrublands,OSH,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+IT-Lsn,45.740482,12.750297,-0.184282228,5,4,2,5,Open Shrublands,OSH,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+ES-Abr,38.701839,-6.785881,279.9830627,0,0,8,15,Savannas,SAV,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+ES-LM1,39.94269,-5.778683,264.1048584,0,1,8,15,Savannas,SAV,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+ES-LM2,39.934592,-5.775881,268.6992188,0,1,8,15,Savannas,SAV,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+CZ-wet,49.0247,14.7704,1180.554932,6,8,0.3,2,Permanent Wetlands,WET,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+DE-Akm,53.86617,13.68342,0.24140045,13,6,4,,Permanent Wetlands,WET,NA
+FI-Sii,61.83265,24.19285,166.5739288,4,2,0.3,2,Permanent Wetlands,WET,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+FR-LGt,47.322918,2.284102,154.7416992,15,7,1,2,Permanent Wetlands,WET,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+SE-Deg,64.18203,19.55654,265.4534607,3,2,0.3,1.75,Permanent Wetlands,WET,https://www.sciencedirect.com/science/article/pii/S0034425722004308
+ES-Cnd,37.914998,-3.227659,367.7266235,0,0,8,15,Woody Savannas,WSA,https://www.sciencedirect.com/science/article/pii/S0034425722004308

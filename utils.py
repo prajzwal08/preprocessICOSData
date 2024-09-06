@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import xarray as xr
 import numpy as np
-from getco2 import get_co2_data
 from typing import Union
 
 # def list_folders_with_prefix(location):
@@ -402,6 +401,42 @@ def update_co2_data(data_xarray, cams_path, counts = None):
         attributes_CO2air = {'method': 'from field'}
         data_xarray['CO2air'].attrs.update(attributes_CO2air)
 
+    return data_xarray
+
+def update_humidity_data(data_xarray, counts):
+    """
+    Updates the 'RH' (Relative Humidity) and 'Qair' (Specific Humidity) in the xarray dataset.
+    
+    Parameters:
+    - data_xarray (xr.Dataset): The xarray dataset to update.
+    - counts (dict): Dictionary containing the counts of missing values for different variables.
+    
+    Returns:
+    - xr.Dataset: Updated xarray dataset with 'RH' and 'Qair' data.
+    """
+    # Calculate relative and specific humidity
+    relative_humidity, specific_humidity = calculate_relative_and_specific_humidity(
+        data_xarray.VPD.values.flatten(), 
+        data_xarray.Tair.values.flatten(), 
+        data_xarray.Psurf.values.flatten()
+    )
+    
+    # Check if RH data is missing
+    if counts['RH'] > 0:
+        # If missing, replace with calculated values
+        data_xarray['Qair'] = xr.DataArray(specific_humidity.reshape(1, 1, -1), dims=['x', 'y', 'time'])
+        data_xarray['RH'] = xr.DataArray(relative_humidity.reshape(1, 1, -1), dims=['x', 'y', 'time'])
+        # Update attributes to indicate the source of the data
+        attributes_RH_Qair = {'method': 'calculated from VPD, Tair, Psurf, ignoring field data.'}
+        data_xarray['Qair'].attrs.update(attributes_RH_Qair)
+        data_xarray['RH'].attrs.update(attributes_RH_Qair)
+    else:
+        # If RH data is not missing, only update Qair with calculated values
+        data_xarray['Qair'] = xr.DataArray(specific_humidity.reshape(1, 1, -1), dims=['x', 'y', 'time'])
+        # Update attributes for Qair
+        attributes_RH_Qair = {'method': 'calculated from VPD, Tair, Psurf, ignoring field data.'}
+        data_xarray['Qair'].attrs.update(attributes_RH_Qair)
+    
     return data_xarray
 
     

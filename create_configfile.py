@@ -33,7 +33,6 @@ for file in nc_files:
     # Format the time values
     min_time_str = pd.to_datetime(min_time, unit='s').strftime('%Y-%m-%dT%H:%M')
     max_time_str = pd.to_datetime(max_time, unit='s').strftime('%Y-%m-%dT%H:%M')
-        
     
     # Append data to the list
     data.append([station_name, min_time_str, max_time_str])
@@ -53,9 +52,17 @@ for index, row in df.iterrows():
     start_time = row['Start_Time']
     end_time = row['End_Time']
     
-    print(station_name,start_time,end_time)
-    # Define config template
-    config_template = f"""\
+    # Define the directory path
+    station_dir = os.path.join(filepath_ICOS_config, station_name)
+    
+    # Check if the directory already exists
+    if not os.path.exists(station_dir):
+        print(station_name)
+        # Create station folder
+        os.makedirs(station_dir)
+        
+        # Define config template
+        config_template = f"""\
 WorkDir=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/ICOS_sites/{station_name}/
 SoilPropertyPath=/home/khanalp/STEMMUS_SCOPE_model/STEMMUS_SCOPE_old/STEMMUS_SCOPE/input/SoilProperty/
 ForcingPath=/home/khanalp/data/processed/input_pystemmus/
@@ -73,13 +80,8 @@ InputPath=
 OutputPath=
 """
 
-    # Construct the directory path
-    station_dir = os.path.join(filepath_ICOS_config, station_name)
-    
-    # Create station folder if it doesn't exist
-    if not os.path.exists(station_dir):
-        os.makedirs(station_dir)
-
-    # Write config file
-    with open(os.path.join(station_dir, "config_file.txt"), "w") as file:
-        file.write(config_template)
+        # Write config file
+        with open(os.path.join(station_dir, "config_file.txt"), "w") as file:
+            file.write(config_template)
+    else:
+        print(f"Configuration directory for {station_name} already exists. Skipping creation.")

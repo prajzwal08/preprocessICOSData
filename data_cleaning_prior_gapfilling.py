@@ -23,7 +23,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Tuple, Union, Optional
-from unit_conversion import kelvin_to_celsius, pascal_to_hectoPascal, meter_to_milimeter, joule_to_watt
+from unit_conversion import kelvin_to_celsius, pascal_to_hectoPascal, meter_to_milimeter, joule_to_watt, kilopascal_to_hectoPascal
 from utils import calculate_vapor_pressure_deficit_from_temperatures,calculate_wind_speed_from_u_v
 
 
@@ -50,10 +50,10 @@ if __name__ == "__main__":
     df_era5_land['air_temperature_degreeC'] = kelvin_to_celsius(np.array(df_era5_land['temperature_2m'].values))
     df_era5_land['dewpoint_temperature_degreeC'] = kelvin_to_celsius(np.array(df_era5_land['dewpoint_temperature_2m'].values))
     #Calculate vpd
-    df_era5_land['VPD_hPa'] = calculate_vapor_pressure_deficit_from_temperatures(
+    df_era5_land['VPD_hPa'] = kilopascal_to_hectoPascal(calculate_vapor_pressure_deficit_from_temperatures(
         air_temperatures=df_era5_land['air_temperature_degreeC'].values,
         dew_point_temperatures=df_era5_land['dewpoint_temperature_degreeC'].values
-    )
+    ))
     df_era5_land['surface_solar_radiation_downwards_w_per_sqm'] = joule_to_watt(
         variable_joule=df_era5_land['surface_solar_radiation_downwards'].values,
         accumulation_period=1,

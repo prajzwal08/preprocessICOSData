@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import xarray as xr
 import numpy as np
-from typing import Union
+from typing import Union,Optional,Tuple
 
 # def list_folders_with_prefix(location):
 #     """
@@ -440,5 +440,119 @@ def update_humidity_data(data_xarray, counts):
     return data_xarray
 
     
+def resample_and_aggregate(dataset: xr.Dataset, freq: str = '30min', sum_variable: str = 'RAIN') -> xr.Dataset:
+    """
+    Resample the dataset to the specified frequency and apply aggregation functions.
 
+    Parameters:
+        dataset (xr.Dataset): The xarray dataset to resample.
+        freq (str): Frequency for resampling (e.g., '30min').
+        sum_variable (str): Variable to apply sum aggregation.
+
+    Returns:
+        xr.Dataset: Resampled and aggregated dataset.
+    """
+    # Separate datasets for mean and sum variables
+    mean_vars = [var for var in dataset.data_vars if var != sum_variable]
+    sum_vars = [sum_variable] if sum_variable in dataset.data_vars else []
+
+    # Apply mean aggregation to all variables except the sum_variable
+    ds_mean = dataset[mean_vars].resample(time=freq).mean(skipna=True)
+    # Apply sum aggregation only to the specified variable
+    ds_sum = dataset[sum_vars].resample(time=freq).sum() if sum_vars else xr.Dataset()
+
+    # Merge the mean and sum datasets
+    combined_dataset = xr.merge([ds_mean, ds_sum])
+
+    return combined_dataset
+
+def calculate_vapor_pressure_deficit_from_temperatures(
+    air_temperatures: np.ndarray,
+    dew_point_temperatures: np.ndarray,
+    return_components: Optional[bool] = False
+) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray, np.ndarray]]:
+    """
+    Calculate the vapor pressure deficit (VPD) given air temperatures and dew point temperatures in degrees Celsius.
+    
+    Uses Magnus-Tetens relationship (Murray,1967) and returns results in kiloPascals (KPa).
+    Optionally returns saturation vapor pressure (esat), actual vapor pressure (e), and VPD.
+    
+    Parameters:
+    air_temperatures (np.ndarray): Air temperatures in degrees Celsius.
+    dew_point_temperatures (np.ndarray): Dew point temperatures in degrees Celsius.
+    return_components (Optional[bool]): If True, return esat, e, and VPD; otherwise, return only VPD.
+
+    Returns:
+    Union[np.ndarray, Tuple[np.ndarray, np.ndarray, np.ndarray]]:
+        If return_components is False: VPD in hPa.
+        If return_components is True: Tuple containing (esat, e, VPD) all in hPa.
+    """
+    # Define constants
+    constant_a = 6.11E-2  # Scientific notation for 6.11 * 10^-2 in hPa
+    
+    if isinstance(air_temperatures, np.ndarray) and isinstance(dew_point_temperatures, np.ndarray):
+        constant_b = np.where(air_temperatures >= 0, 17.268, 21.874)
+        constant_c = np.where(air_temperatures >= 0, 237.29, 265.49)
         
+        # Calculate saturation vapor pressure (esat) in hPa
+        esat = constant_a * np.exp((constant_b * air_temperatures) / (air_temperatures + constant_c))
+        
+        # Calculate actual vapor pressure (e) in hPa
+        e = constant_a * np.exp((constant_b * dew_point_temperatures) / (dew_point_temperatures + constant_c))
+        
+        # Calculate vapor pressure deficit (VPD) in hPa
+        vpd = esat - e
+        
+        if return_components:
+            return esat, e, vpd
+        else:
+            return vpd
+    else:
+        raise TypeError("Unsupported type for air_temperatures and dew_point_temperatures. Must be numpy.ndarray.")
+
+def calculate_wind_speed_from_u_v(u_component_wind: np.ndarray, v_component_wind: np.ndarray) -> np.ndarray:
+    """
+    Calculate the wind speed from the U and V components of the wind.
+
+    Args:
+        u_component_wind (np.ndarray): Array of the U component of the wind (zonal wind component).
+        v_component_wind (np.ndarray): Array of the V component of the wind (meridional wind component).
+
+    Returns:
+        np.ndarray: Array of wind speeds calculated from the U and V components.
+    """
+    # Calculate wind speed using the Pythagorean theorem
+    wind_speed = np.sqrt(u_component_wind**2 + v_component_wind**2)
+    return wind_speed
+
+
+def convert_accumulated_values_to_hourly_values(accumulated_array: np.ndarray) -> np.ndarray:
+    """
+    Convert accumulated values to hourly values by computing differences between consecutive hours.
+
+    Args:
+        accumulated_array (np.ndarray): 1D or 2D array of accumulated values.
+
+    Returns:
+        np.ndarray: 2D array of hourly values, where each row corresponds to a day.
+    """
+    # Reshape the array to have 24 columns (for hours) and as many rows as necessary
+    # Ensure that the total number of elements is divisible by 24
+    num_hours = accumulated_array.size
+    if num_hours % 24 != 0:
+        raise ValueError("The size of the array must be divisible by 24.")
+    
+    trial = accumulated_array.reshape(-1, 24)
+    trial_copy = trial.copy()
+
+    # Compute the difference between consecutive hours
+    # trial_shifted = trial[:,1:] is not used in the final calculation, so it's removed
+    diff = trial[:, 1:] - trial[:, :-1]
+    trial_copy[:, 1:] = diff
+
+    # For the first hour of each day, retain the original value
+    trial_copy[:, 0] = trial[:, 0]  # This retains the first hour's value as it is
+
+    return trial_copy.flatten() 
+
+

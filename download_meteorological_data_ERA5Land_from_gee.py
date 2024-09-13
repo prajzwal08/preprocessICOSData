@@ -37,8 +37,8 @@ latitude = df_station_details.loc[df_station_details['station_name'] == station_
 longitude = df_station_details.loc[df_station_details['station_name'] == station_name, 'longitude'].values[0]
 
 # Define start and end dates
-start_date = "2015-01-01"
-end_date = "2023-12-31"
+start_date = "2023-12-31"
+end_date = "2024-01-01"
 
 def generate_six_month_intervals(start_date: str, end_date: str) -> List[Tuple[str, str]]:
     #Generate a list of 6-month intervals between the start and end dates. This is because of the 

@@ -1,6 +1,5 @@
 # Title: Retrieving ERA5 Land Initial Condition Data for ICOS Stations using Google Earth Engine
-# Author: [Prajwal Khanal]
-# Date: [22 March 2024 @ 11:34 AM @ Boston Public Library]
+
 
 # Importing necessary libraries
 import ee

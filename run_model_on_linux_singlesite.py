@@ -12,7 +12,7 @@ from datetime import datetime
 info_config_file_path = "/home/khanalp/code/PhD/preprocessICOSdata/csvs/04_info_for_configfile.csv"
 df_station_details = pd.read_csv(info_config_file_path, index_col=0)
 
-station_name = "NL-Loo"
+station_name = "NL-Cab"
 # Filter DataFrame for the specific station name
 station_details = df_station_details[df_station_details['Station_Name'] == station_name]
 start_time = station_details['Start_Time'].iloc[0]

@@ -21,14 +21,13 @@ Run this script as a standalone program. It will read input data from specified 
 import os
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from typing import Tuple, Union, Optional
 from unit_conversion import kelvin_to_celsius, pascal_to_hectoPascal, meter_to_milimeter, joule_to_watt, kilopascal_to_hectoPascal
-from utils import calculate_vapor_pressure_deficit_from_temperatures,calculate_wind_speed_from_u_v
+from utils import calculate_vapor_pressure_deficit_from_temperatures,calculate_wind_speed_from_u_v,convert_accumulated_values_to_hourly_values
 
 
 
 if __name__ == "__main__":
+    #File paths 
     era5_land_path = "~/data/fluxsites_NL/incoming/veenkampen/era5land_gee/era5land_veenkampen_final.csv"
     fluxnet_data_path = "~/data/fluxsites_NL/incoming/veenkampen/insitu_major_meteorological_variable.csv"
     intermediate_data_path = "~/data/fluxsites_NL/incoming/veenkampen/intermediate"
@@ -41,29 +40,39 @@ if __name__ == "__main__":
     df_era5_land['time'] = pd.to_datetime(df_era5_land['time'])
     df_insitu['time'] = pd.to_datetime(df_insitu['time'])
     
-    # Convert units for in-situ data
+    # Convert units for air temperature and VPD in-situ data
     df_insitu['air_temperature_degreeC'] = kelvin_to_celsius(np.array(df_insitu['air_temperature'].values))
     df_insitu['VPD_hPa'] = pascal_to_hectoPascal(np.array(df_insitu['VPD'].values))
     
     # Convert units for ERA5-Land data
-    df_era5_land['total_precipitation_mm'] = meter_to_milimeter(df_era5_land['total_precipitation'].values)
     df_era5_land['air_temperature_degreeC'] = kelvin_to_celsius(np.array(df_era5_land['temperature_2m'].values))
     df_era5_land['dewpoint_temperature_degreeC'] = kelvin_to_celsius(np.array(df_era5_land['dewpoint_temperature_2m'].values))
-    #Calculate vpd
+    # Calculate vpd
     df_era5_land['VPD_hPa'] = kilopascal_to_hectoPascal(calculate_vapor_pressure_deficit_from_temperatures(
         air_temperatures=df_era5_land['air_temperature_degreeC'].values,
         dew_point_temperatures=df_era5_land['dewpoint_temperature_degreeC'].values
     ))
-    df_era5_land['surface_solar_radiation_downwards_w_per_sqm'] = joule_to_watt(
-        variable_joule=df_era5_land['surface_solar_radiation_downwards'].values,
+    
+    # Change accumulated variable (ssrd,strd, precipitation) of ERA5land to hourly 
+    df_era5_land['surface_solar_radiation_downwards_hourly'] = convert_accumulated_values_to_hourly_values(df_era5_land['surface_solar_radiation_downwards'].values)
+    df_era5_land['surface_thermal_radiation_downwards_hourly'] = convert_accumulated_values_to_hourly_values(df_era5_land['surface_thermal_radiation_downwards'].values)
+    df_era5_land['precipitation_hourly'] = convert_accumulated_values_to_hourly_values(df_era5_land['total_precipitation'].values)
+    
+    
+    # COnvert units of the accumulated variables in same unit as insitu 
+    df_era5_land['hourly_surface_solar_radiation_downwards_w_per_sqm'] = joule_to_watt(
+        variable_joule=df_era5_land['surface_solar_radiation_downwards_hourly'].values,
         accumulation_period=1,
         unit="h"
     )
-    df_era5_land['surface_thermal_radiation_downwards_w_per_sqm'] = joule_to_watt(
-        variable_joule=df_era5_land['surface_thermal_radiation_downwards'].values,
+    df_era5_land['hourly_surface_thermal_radiation_downwards_w_per_sqm'] = joule_to_watt(
+        variable_joule=df_era5_land['surface_thermal_radiation_downwards_hourly'].values,
         accumulation_period=1,
         unit="h"
     )
+    
+    df_era5_land['hourly_precipitation_mm'] = meter_to_milimeter(df_era5_land['precipitation_hourly'].values)
+    
     df_era5_land['wind_speed'] = calculate_wind_speed_from_u_v(
         u_component_wind=df_era5_land['u_component_of_wind_10m'].values,
         v_component_wind=df_era5_land['v_component_of_wind_10m'].values
@@ -108,9 +117,9 @@ if __name__ == "__main__":
     # Variables needed for ERA5-Land data
     variables_needed_era5_land = [
         'time',
-        'total_precipitation_mm',
-        'surface_solar_radiation_downwards',
-        'surface_thermal_radiation_downwards',
+        'hourly_precipitation_mm',
+        'hourly_surface_solar_radiation_downwards_w_per_sqm',
+        'hourly_surface_thermal_radiation_downwards_w_per_sqm',
         'surface_pressure',
         'air_temperature_degreeC',
         'VPD_hPa',
@@ -118,9 +127,9 @@ if __name__ == "__main__":
     ]
     
     rename_mapping_era5_land = {
-        'total_precipitation_mm': 'precipitation',
-        'surface_solar_radiation_downwards': 'swdown',
-        'surface_thermal_radiation_downwards': 'lwdown',
+        'hourly_precipitation_mm': 'precipitation',
+        'hourly_surface_solar_radiation_downwards_w_per_sqm': 'swdown',
+        'hourly_surface_thermal_radiation_downwards_w_per_sqm': 'lwdown',
         'surface_pressure': 'air_pressure',
         'air_temperature_degreeC': 'air_temperature',
         'VPD_hPa': 'VPD'

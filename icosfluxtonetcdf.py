@@ -4,27 +4,35 @@ assigns attributes to variables, and saves the dataset as NetCDF files.
 """
 
 import os
-import xarray as xr
+import sys
 import pandas as pd
+
+# Add the utils folder to the system path to use custom functions. 
+sys.path.append('/home/khanalp/code/PhD/') 
 from utils.utils import read_csv_file_with_station_name, select_rename_convert_to_xarray
 
 # Define paths
 station_details = '/home/khanalp/code/PhD/preprocessICOSdata/csvs/02_station_with_elevation_heightcanopy.csv'  
 ICOS_location = "/home/khanalp/data/ICOS2020"
-output_path = "/home/khanalp/data/processed/insituflux"
+output_path = "/home/khanalp/data/processed/insituflux_with_qc"
 
 variable_info = {
     'Rnet': {'rename_from': 'NETRAD', 'unit': 'W/m²', 'description': 'Net radiation', 'missing_value': -9999},
+    'Rnet_qc' :{'rename_from': 'NETRAD_QC', 'unit': '0 to 1, indicating percentage of measured data', 'description': 'Quality flag for net radiation', 'missing_value': -9999},
     'SWup': {'rename_from': 'SW_OUT', 'unit': 'W/m²', 'description': 'Upward shortwave radiation', 'missing_value': -9999},
     'Qle': {'rename_from': 'LE_F_MDS', 'unit': 'W/m²', 'description': 'Latent heat flux', 'missing_value': -9999},
+    'Qle_qc': {'rename_from': 'LE_F_MDS_QC', 'unit': '0-measured,1-good quality gapfill, 2-medium, 3-poor', 'description': 'Quality flag for latent heat flux', 'missing_value': -9999},
     'Qh': {'rename_from': 'H_F_MDS', 'unit': 'W/m²', 'description': 'Sensible heat flux', 'missing_value': -9999},
+    'Qh_qc': {'rename_from': 'H_F_MDS_QC', 'unit': '0-measured,1-good quality gapfill, 2-medium, 3-poor', 'description': 'Quality flag for sensible heat flux', 'missing_value': -9999},
     'Qg': {'rename_from': 'G_F_MDS', 'unit': 'W/m²', 'description': 'Ground heat flux', 'missing_value': -9999},
+    'Qg_qc': {'rename_from': 'G_F_MDS_QC', 'unit': '0-measured,1-good quality gapfill, 2-medium, 3-poor', 'description': 'Quality flag for ground heat flux', 'missing_value': -9999},
     'Qle_cor': {'rename_from': 'LE_CORR', 'unit': 'W/m²', 'description': 'Energy-balance-corrected latent heat flux', 'missing_value': -9999},
     'Qh_cor': {'rename_from': 'H_CORR', 'unit': 'W/m²', 'description': 'Energy-balance-corrected sensible heat flux', 'missing_value': -9999},
     'Qle_cor_uc': {'rename_from': 'LE_CORR_JOINTUNC', 'unit': 'W/m²', 'description': 'Qle_cor joint uncertainty', 'missing_value': -9999},
     'Qh_cor_uc': {'rename_from': 'H_CORR_JOINTUNC', 'unit': 'W/m²', 'description': 'Qh_cor joint uncertainty', 'missing_value': -9999},
     'Ustar': {'rename_from': 'USTAR','unit': 'm/s', 'description': 'Friction velocity', 'missing_value': -9999},
     'NEE': {'rename_from': 'NEE_VUT_REF', 'unit': 'umolCO2/m²/s', 'description': 'Net ecosystem exchange of CO2', 'missing_value': -9999},
+    'NEE_qc': {'rename_from': 'NEE_VUT_REF_QC', 'unit': '0-measured,1-good quality gapfill, 2-medium, 3-poor', 'description': 'Quality flag for net ecosystem exchange of CO2', 'missing_value': -9999},
     'NEE_uc': {'rename_from': 'NEE_VUT_REF_JOINTUNC', 'unit': 'umolCO2/m²/s', 'description': 'NEE joint uncertainty', 'missing_value': -9999},
     'GPP': {'rename_from': 'GPP_NT_VUT_REF', 'unit': 'umolCO2/m²/s', 'description': 'Gross primary productivity of CO2', 'missing_value': -9999},
     'GPP_se': {'rename_from': 'GPP_NT_VUT_SE', 'unit': 'umolCO2/m²/s', 'description': 'Standard error in GPP', 'missing_value': -9999},
